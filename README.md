@@ -2,6 +2,9 @@
 
 Зробити веб додаток Vue 3 - демонстрація покерного столу з 2ма гравцями. Перед кожним з них на столі лежать 2 карти. Карти відкриті. Додати 2 кнопки: Перша - show/hide для карт. Друга - роздача карт.
 
+![Скриншот гри на столі](assets/screenshot.png)
+
+
 ## Recommended IDE Setup
 
 [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
