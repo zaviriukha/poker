@@ -46,7 +46,7 @@ onMounted(() => {
   <div class="min-h-screen flex items-center justify-center">
     <div class="p-6 max-w-4xl w-full">
       <h1 class="text-2xl font-bold text-center mb-16">Poker Table</h1>
-      <div class="flex justify-between items-center mb-6 border border-white p-12 rounded-full bg-green-700 shadow-lg">
+      <div class="h-36 flex justify-between items-center mb-6 border border-white p-12 rounded-full bg-green-700 shadow-lg">
         <PlayerCards :cards="player1" :player-name="'Player 1'" :cards-visible="cardsVisible" />
         <PlayerCards :cards="player2" :player-name="'Player 2'" :cards-visible="cardsVisible" />
       </div>
