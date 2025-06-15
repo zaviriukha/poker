@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import PlayerCards from "@/components/cards/PlayerCards.vue";
 
 const deck = ref([])
@@ -24,8 +24,16 @@ const deckValues = {
 
 const player1 = ref([]) // базово пустий масив для карт гравця
 const player2 = ref([]) // базово пустий масив для карт гравця
-const cardsVisible = ref(true) // статус відкритості карт гравців на столі
+
+// const cardsVisible = ref(true) // статус відкритості карт гравців на столі
+
 const result = ref('') // результат переможця
+
+const cardsVisibility = ref({ // замінюємо cardsVisible на cardsVisibility - так ми зможемо розширити функціонал кнопки перемикання.
+  player1: false, // у кожного з гравців вона буде працювати незалежно від іншого
+  player2: false,
+})
+
 
 // тасуемо fullDeck а також з цього починається гра - стіл пустий, колода тасована
 function resetDeck() {
@@ -49,24 +57,41 @@ function getWinner() {
 // здаємо карти
 function dealCards() {
   if (deck.value.length < 4) {
-    alert("У колоді не залишилось достатньо карт!")
+    alert("Not enough cards in deck!")
     return
   }
   player1.value = deck.value.splice(0, 2) // здаємо по 2 карти з колоди гравцю, з колоди вони видаляються
   player2.value = deck.value.splice(0, 2) // здаємо по 2 карти з колоди гравцю, з колоди вони видаляються
-  getWinner()
+  result.value = ''
+  cardsVisibility.value = { player1: false, player2: false } // ховаємо карти знову
+  // getWinner() прибираємо, бо у цьому кейсі переможець пожеться відразу як здадуться карти
 }
 
 // перемикання видимості карт гравців
-function toggleCards() {
-  cardsVisible.value = !cardsVisible.value
+// function toggleCards() {
+//   cardsVisible.value = !cardsVisible.value
+// }
+
+// гравець дивиться сам свої карти
+function togglePlayerCards(player) {
+  cardsVisibility.value[player] = !cardsVisibility.value[player]
 }
+
 
 // роздача карт при завантаженні компонента
 onMounted(() => {
   resetDeck()
   // dealCards()
 })
+
+watch(cardsVisibility, (visibility) => {
+  if (visibility.player1 && visibility.player2) {
+    getWinner()
+  } else {
+    result.value = ''
+  }
+}, { deep: true })
+
 </script>
 
 
@@ -75,8 +100,8 @@ onMounted(() => {
     <div class="p-6 max-w-4xl w-full">
       <h1 class="text-2xl font-bold text-center mb-16">Poker Table</h1>
       <div class="h-36 flex justify-between items-center mb-6 border border-white p-12 rounded-full bg-green-700 shadow-lg">
-        <PlayerCards :cards="player1" :player-name="'Player 1'" :cards-visible="cardsVisible" />
-        <PlayerCards :cards="player2" :player-name="'Player 2'" :cards-visible="cardsVisible" />
+        <PlayerCards :cards="player1" player-name="Player 1" v-model:visible="cardsVisibility.player1"/>
+        <PlayerCards :cards="player2" player-name="Player 2" v-model:visible="cardsVisibility.player2"/>
       </div>
       <div class="flex justify-center gap-4">
         <div v-if="result" class="text-center mt-6 text-xl font-semibold">
@@ -84,9 +109,9 @@ onMounted(() => {
         </div>
       </div>
       <div class="flex justify-center gap-4">
-        <button @click="toggleCards" class="w-32 px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 min-w-20">
-          {{ cardsVisible ? 'Hide' : 'Show' }} Cards
-        </button>
+<!--        <button @click="toggleCards" class="w-32 px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 min-w-20">-->
+<!--          {{ cardsVisible ? 'Hide' : 'Show' }} Cards-->
+<!--        </button>-->
         <button @click="dealCards" class="w-32 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
           Deal Cards
         </button>
